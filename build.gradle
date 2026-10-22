@@ -1,0 +1,46 @@
+plugins {
+    id 'net.neoforged.fd.gradle' version '7.0.103'
+}
+
+neoforge {
+    version forgeVersion
+    runs {
+        client {
+            property 'forge.logging.markers', 'REGISTRIES'
+        }
+        server {
+            property 'forge.logging.markers', 'REGISTRIES'
+        }
+        data {
+            property 'forge.logging.markers', 'REGISTRIES'
+        }
+    }
+}
+
+repositories {
+    maven {
+        name = 'NeoForge'
+        url = neoforge.modsRepo
+    }
+    maven {
+        name = 'Maven'
+        url = 'https://maven.minecraftforge.net/'
+    }
+}
+
+dependencies {
+    minecraft "net.neoforged:neoforge:${neoforge_version}"
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+}
+
+jar {
+    from {
+        configurations.compileClasspath.get().filter { it.name.endsWith('jar') }.collect { zipTree(it) }
+    } {
+        exclude "META-INF/*", "*.SF", "*.DSA", "*.RSA"
+    }
+}
